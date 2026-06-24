@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Project-specific
+.claude/settings.json
+CLAUDE.md
+scripts/trello-sync.js
