@@ -164,9 +164,9 @@ export default function About() {
     <>
       <AboutHero />
       <AboutStats />
-      <Mission />
       <Values />
-      <Journey />
+      <Mission />
+      {/* <Journey /> */}
       <FinalCTA />
     </>
   )
