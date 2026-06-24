@@ -19,8 +19,8 @@
   --accent-soft-2: rgba(37,99,235,.14);
   --font-head: "Sora", system-ui, sans-serif;
   --font-body: "Manrope", system-ui, sans-serif;
-  --radius: 16px;
-  --btn-radius: 999px;
+  --radius: 0px;
+  --btn-radius: 10px;
   --section-pad: 120px;
   --maxw: 1240px;
   --gutter: clamp(20px,5vw,64px);
@@ -94,6 +94,8 @@ button { font-family: inherit }
 .btn-light { background: #fff; color: var(--ink) }
 .btn-light:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg) }
 .btn-lg { padding: 18px 32px; font-size: 17px }
+.btn-sm { padding: 9px 16px; font-size: 14px; gap: 7px }
+.btn-sm svg { width: 15px; height: 15px }
 
 .linkarrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent); font-size: 15px }
 .linkarrow svg { width: 16px; height: 16px; transition: transform .25s }
@@ -117,7 +119,7 @@ button { font-family: inherit }
   display: flex; align-items: center; gap: 11px; font-family: var(--font-head);
   font-weight: 700; font-size: 21px; letter-spacing: -.01em; color: var(--ink);
 }
-.brand__mark { width: 34px; height: 34px; flex: none }
+.brand__mark { height: 32px; width: auto; flex: none; object-fit: contain }
 .nav { display: flex; align-items: center; gap: 2px }
 .nav__link {
   position: relative; font-weight: 600; font-size: 15px; color: var(--ink-2);
@@ -152,6 +154,15 @@ button { font-family: inherit }
   transition: background .14s, color .14s;
 }
 .mega__item:hover { background: var(--bg-alt); color: var(--accent) }
+.mega__item .ic { width: 18px; height: 18px; color: var(--accent); flex: none; opacity: .85 }
+.mega__cta { grid-column: 1/-1; margin-top: 8px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 24px }
+.mega__cta p { color: var(--muted); font-size: 15px }
+.mega__cta strong { color: var(--ink); font-weight: 600 }
+
+/* About submenu — column positioned under the trigger */
+.submenu { position: relative; min-height: 150px }
+.submenu__col { position: absolute; top: 38px }
+.submenu__col h4 { font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 18px }
 
 /* hamburger */
 .burger {
@@ -183,7 +194,7 @@ button { font-family: inherit }
   display: flex; align-items: center; gap: 11px; font-family: var(--font-head);
   font-weight: 700; font-size: 22px; color: #fff;
 }
-.foot__brand .brand__mark { width: 34px; height: 34px }
+.foot__brand .brand__mark { height: 34px; width: auto; background: #fff; padding: 5px; border-radius: 9px; box-sizing: border-box }
 .foot__contact { display: flex; flex-direction: column; gap: 12px }
 .foot__contact a { display: flex; align-items: center; gap: 10px; color: #B7BFD0; font-size: 15px }
 .foot__contact a:hover { color: #fff }
@@ -328,13 +339,10 @@ button { font-family: inherit }
   font-family: var(--font-head); font-weight: 600; font-size: clamp(1.05rem,1.6vw,1.3rem);
   letter-spacing: -.02em; color: var(--ink); width: 200px; flex: none;
 }
-.plat-row__logos { display: flex; gap: 10px; flex-wrap: wrap; flex: 1 }
+.plat-row__logos { flex: 1 }
 .plat-logo {
-  display: inline-flex; align-items: center; justify-content: center;
-  height: 36px; padding: 0 14px;
-  border-radius: 10px; border: 1px solid var(--line); background: var(--bg-alt);
-  font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--ink-2);
-  white-space: nowrap;
+  width: 84px; height: 48px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--bg-alt); flex: none; object-fit: contain;
 }
 .plat-dash { position: sticky; top: 96px }
 
@@ -410,6 +418,11 @@ button { font-family: inherit }
 /* ============================================================
    HOME PAGE
    ============================================================ */
+
+/* Home page: compact button sizing (matches home.css design override) */
+.page-home .btn { padding: 11px 20px; font-size: 14px; gap: 8px }
+.page-home .btn svg { width: 15px; height: 15px }
+.page-home .btn-lg { padding: 13px 24px; font-size: 15px }
 
 /* ---- Hero ---- */
 .hero {
@@ -506,6 +519,13 @@ button { font-family: inherit }
 }
 
 /* ---- Zigzag lifecycle (Why Partner) ---- */
+.why-sec { position: relative; overflow: hidden }
+.why-sec > .wrap { position: relative; z-index: 1 }
+.why-dots {
+  position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, #000 40%, transparent 82%);
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, #000 40%, transparent 82%);
+}
 .zz {
   display: flex; align-items: center; justify-content: center;
   flex-wrap: nowrap; gap: 0; padding: 46px 0;
@@ -516,22 +536,19 @@ button { font-family: inherit }
 }
 .zz__card.is-up { transform: translateY(-34px) }
 .zz__card.is-down { transform: translateY(34px) }
-.zz__ic { flex: none }
 .zz__title { font-family: var(--font-head); font-weight: 600; font-size: 1.12rem; letter-spacing: -.02em }
 .zz__body { font-size: 13.5px; line-height: 1.48 }
 .zz__arrow {
   flex: 0 0 auto; align-self: center; display: flex; align-items: center; justify-content: center;
-  color: var(--accent); width: 30px;
+  color: var(--accent); width: 48px;
 }
-.zz__arrow svg { width: 26px; height: 26px }
-.zz__arrow.to-down { transform: translateY(34px) rotate(34deg) }
-.zz__arrow.to-up { transform: translateY(-34px) rotate(-34deg) }
+.zz__curve { width: 48px; height: 96px; overflow: visible }
 @media (max-width: 680px) {
   .zz { flex-direction: column; align-items: stretch; padding: 8px 0; gap: 0 }
   .zz__card { width: auto }
   .zz__card.is-up, .zz__card.is-down { transform: none }
-  .zz__arrow { width: auto; padding: 8px 0 }
-  .zz__arrow.to-down, .zz__arrow.to-up { transform: rotate(90deg) }
+  .zz__arrow { width: 100%; height: 54px; padding: 0 }
+  .zz__curve { width: 80px; height: 54px }
 }
 
 /* ---- Services preview (sticky left + card grid) ---- */
@@ -562,6 +579,7 @@ button { font-family: inherit }
 }
 .quote__name { font-weight: 600; color: var(--ink); font-size: 15px }
 .quote__org { color: var(--muted-2); font-size: 13.5px }
+.quote__mark { font-family: var(--font-head); font-size: 54px; line-height: .4; color: var(--accent); height: 26px }
 @media (max-width: 880px) { .quotes { grid-template-columns: 1fr } }
 
 /* ---- Industry image-card grid ---- */
@@ -580,6 +598,7 @@ button { font-family: inherit }
 }
 .indx__card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg) }
 .indx__bg { position: absolute; inset: 0; width: 100%; height: 100% }
+.indx__img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover }
 .indx__overlay {
   position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg,rgba(10,14,23,.55) 0%,rgba(10,14,23,.12) 38%,rgba(10,14,23,.78) 100%);

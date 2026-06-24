@@ -17,7 +17,7 @@ export default function FinalCTA() {
             <p className="cta__sub pretty">
               Tell us about your project. We'll help you find the clearest path from idea to working software.
             </p>
-            <Link to="#" className="btn btn-light btn-lg">
+            <Link to="/contact" className="btn btn-light btn-lg">
               Get In Touch
               <ArrowIcon />
             </Link>

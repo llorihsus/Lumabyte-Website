@@ -103,10 +103,11 @@ const ChevronRight = () => (
 )
 
 /* ---- Service card ---- */
-function ServiceCard({ s }: { s: typeof SERVICES[0] }) {
+function ServiceCard({ s, i = 0 }: { s: typeof SERVICES[0]; i?: number }) {
   const [open, setOpen] = useState(false)
   return (
     <article className={`svc${open ? ' open' : ''}`}>
+      <div className="svc__index">{String(i + 1).padStart(2, '0')}</div>
       <div className="svc__head">
         <h3 className="svc__title">{s.title}</h3>
         <button
@@ -156,7 +157,7 @@ function ServiceList() {
     <section className="section--tight" style={{ paddingTop: 0 }}>
       <div className="carousel">
         <div className="carousel__scroller" ref={scrollerRef}>
-          {SERVICES.map(s => <ServiceCard key={s.title} s={s} />)}
+          {SERVICES.map((s, i) => <ServiceCard key={s.title} s={s} i={i} />)}
         </div>
       </div>
       <div className="carousel__nav">
@@ -171,75 +172,48 @@ function ServiceList() {
   )
 }
 
-/* ---- Dashboard widget ---- */
-function Dashboard() {
-  return (
-    <div className="dash">
-      <div className="dash__bar">
-        <div className="dash__brand"><span className="d-mark" />LUMABYTE</div>
-        <div className="dash__dots"><i /><i /><i /></div>
-      </div>
-      <div className="dash__hi">Good evening, Alex</div>
-      <div className="dash__sub">Here's what's happening with your projects today.</div>
-      <div className="dash__cards">
-        <div className="dash__card">
-          <div className="dash__klabel">Active Projects</div>
-          <div className="dash__kval">24</div>
-          <div className="dash__kbar">
-            <i style={{ height: '40%' }} /><i style={{ height: '70%' }} />
-            <i style={{ height: '55%' }} /><i style={{ height: '90%' }} />
-          </div>
-        </div>
-        <div className="dash__card">
-          <div className="dash__klabel">Deployments</div>
-          <div className="dash__kval">7</div>
-          <div className="dash__kbar">
-            <i style={{ height: '60%' }} /><i style={{ height: '35%' }} />
-            <i style={{ height: '80%' }} /><i style={{ height: '50%' }} />
-          </div>
-        </div>
-        <div className="dash__card">
-          <div className="dash__klabel">System Health</div>
-          <div className="dash__health">
-            <div className="dash__ring"><span>99.9%</span></div>
-          </div>
-        </div>
-      </div>
-      <div className="dash__panel">
-        <div className="dash__plabel">Recent Activity</div>
-        <div className="dash__row"><i />API service deployed to production<time>2m</time></div>
-        <div className="dash__row"><i />Database backup completed<time>15m</time></div>
-        <div className="dash__row"><i />New integration connected<time>1h</time></div>
-        <div className="dash__row"><i />Analytics report generated<time>2h</time></div>
-      </div>
-    </div>
-  )
+
+const LOGO_SRC: Record<string, string> = {
+  'Tailwind CSS': '/images/tailwind-css.svg',
+  'AWS': '/images/aws-logo.png',
+}
+
+function logoSlug(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
 /* ---- Platforms section ---- */
 function Platforms() {
   return (
-    <section className="section bg-alt">
+    <section className="section platforms-sec">
       <div className="wrap">
-        <div className="sechead left">
+        <div className="sechead left platforms-sec__head">
           <h2 className="h-sec balance">Platforms and Tools</h2>
           <p className="lead">We work across a modern, proven stack — and stay flexible to fit your existing systems.</p>
         </div>
         <div className="platforms">
           <div className="plat-rows">
-            {PLATFORMS.map(row => (
+            {PLATFORMS.map((row, i) => (
               <div className="plat-row" key={row.cat}>
                 <span className="plat-row__cat">{row.cat}</span>
                 <div className="plat-row__logos">
-                  {row.logos.map(name => (
-                    <span key={name} className="plat-logo">{name}</span>
-                  ))}
+                  <div className={`plat-marquee${i % 2 ? ' plat-marquee--rev' : ''}`}>
+                    {[0, 1].map(copy => (
+                      <div className="plat-marquee__set" key={copy} aria-hidden={copy === 1 || undefined}>
+                        {row.logos.map(name => (
+                          <img
+                            key={name}
+                            className="plat-logo"
+                            alt={name}
+                            src={LOGO_SRC[name] ?? `/images/slot-logo-${logoSlug(row.cat)}-${logoSlug(name)}.webp`}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
-          </div>
-          <div className="plat-dash">
-            <Dashboard />
           </div>
         </div>
       </div>

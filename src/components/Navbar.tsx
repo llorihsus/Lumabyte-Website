@@ -1,23 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
-function Mark() {
-  return (
-    <svg className="brand__mark" viewBox="0 0 34 34" fill="none" aria-hidden="true">
-      <rect width="34" height="34" rx="9" fill="var(--accent)" />
-      <path d="M11 8.5v13.5h9.5" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="22.5" cy="10.5" r="2.6" fill="#fff" />
-    </svg>
-  )
-}
-
 export default function Navbar() {
   const { pathname } = useLocation()
   const [megaOpen, setMegaOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [aboutLeft, setAboutLeft] = useState(0)
   const [mobileOpen, setMobileOpen] = useState(false)
   const megaTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const aboutTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const aboutRef = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     setMobileOpen(false)
@@ -27,43 +19,45 @@ export default function Navbar() {
 
   const openMega = () => { clearTimeout(megaTimer.current); setMegaOpen(true) }
   const closeMega = () => { megaTimer.current = setTimeout(() => setMegaOpen(false), 120) }
-  const openAbout = () => { clearTimeout(aboutTimer.current); setAboutOpen(true) }
+  const openAbout = () => {
+    clearTimeout(aboutTimer.current)
+    if (aboutRef.current) setAboutLeft(aboutRef.current.getBoundingClientRect().left)
+    setAboutOpen(true)
+  }
   const closeAbout = () => { aboutTimer.current = setTimeout(() => setAboutOpen(false), 120) }
 
   return (
     <header className="hdr">
       <div className="hdr__bar">
         <Link to="/" className="brand">
-          <Mark />
+          <img className="brand__mark" src="/images/lumabyte-logo.png" alt="" aria-hidden="true" />
           <span>Lumabyte</span>
         </Link>
 
         <nav className="nav">
           <Link to="/" className={`nav__link${pathname === '/' ? ' is-active' : ''}`}>Home</Link>
           <div className="has-mega" onMouseEnter={openAbout} onMouseLeave={closeAbout}>
-            <Link to="/about" className={`nav__link${pathname.startsWith('/about') ? ' is-active' : ''}`}>About</Link>
+            <Link ref={aboutRef} to="/about" className={`nav__link${pathname.startsWith('/about') ? ' is-active' : ''}`}>About</Link>
           </div>
-          <Link to="#" className="nav__link">Case Studies</Link>
-          <div className="has-mega" onMouseEnter={openMega} onMouseLeave={closeMega}>
-            <Link to="/services" className={`nav__link${pathname.startsWith('/services') ? ' is-active' : ''}`}>Services</Link>
-          </div>
+          <Link to="/case-studies" className={`nav__link${pathname === '/case-studies' ? ' is-active' : ''}`}>Case Studies</Link>
+          <Link to="/services" className={`nav__link${pathname.startsWith('/services') ? ' is-active' : ''}`}>Services</Link>
         </nav>
 
         <div className="nav__right">
-          <Link to="#" className="btn btn-primary">Get In Touch</Link>
+          <Link to="/contact" className="btn btn-primary btn-sm">Get In Touch</Link>
           <button className="burger" aria-label="Open menu" onClick={() => setMobileOpen(o => !o)}>
             <span />
           </button>
         </div>
       </div>
 
-      {/* About submenu */}
+      {/* About submenu — column positioned under the trigger */}
       <div className={`mega${aboutOpen ? ' open' : ''}`} onMouseEnter={openAbout} onMouseLeave={closeAbout}>
-        <div className="mega__inner" style={{ gridTemplateColumns: '200px' }}>
-          <div className="mega__col">
+        <div className="submenu">
+          <div className="submenu__col" style={{ left: aboutLeft + 'px' }}>
             <div className="mega__list">
               <Link to="/about" className="mega__item">About Us</Link>
-              <Link to="#" className="mega__item">Careers</Link>
+              <Link to="/careers" className="mega__item">Careers</Link>
             </div>
           </div>
         </div>
@@ -84,11 +78,11 @@ export default function Navbar() {
           <div className="mega__col">
             <h4>Industries</h4>
             <div className="mega__list">
-              <Link to="#" className="mega__item">Fintech & Insurance</Link>
-              <Link to="#" className="mega__item">Healthcare</Link>
-              <Link to="#" className="mega__item">Logistics & Supply Chain</Link>
-              <Link to="#" className="mega__item">E-Commerce & Retail</Link>
-              <Link to="#" className="mega__item">Education</Link>
+              <Link to="/case-studies" className="mega__item">Fintech & Insurance</Link>
+              <Link to="/case-studies" className="mega__item">Healthcare</Link>
+              <Link to="/case-studies" className="mega__item">Logistics & Supply Chain</Link>
+              <Link to="/case-studies" className="mega__item">E-Commerce & Retail</Link>
+              <Link to="/case-studies" className="mega__item">Education</Link>
             </div>
           </div>
           <div className="mega__col">
@@ -108,13 +102,11 @@ export default function Navbar() {
       <div className={`mobile${mobileOpen ? ' open' : ''}`}>
         <Link to="/">Home</Link>
         <Link to="/services">Services</Link>
-        <Link to="#">Case Studies</Link>
+        <Link to="/case-studies">Case Studies</Link>
         <Link to="/about">About</Link>
-        <Link to="#">Careers</Link>
-        <Link to="#">Contact</Link>
-        <Link to="#" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 16, display: 'inline-flex' }}>
-          Get In Touch
-        </Link>
+        <Link to="/careers">Careers</Link>
+        <Link to="/contact">Contact</Link>
+        <Link to="/contact" className="btn btn-primary">Get In Touch</Link>
       </div>
     </header>
   )

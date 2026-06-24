@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Reveal from '../components/Reveal'
 import FinalCTA from '../components/FinalCTA'
@@ -20,7 +20,7 @@ function Hero() {
           We design, build, and modernize software for companies across industries.
         </Reveal>
         <Reveal className="hero__cta" delay={120}>
-          <Link to="#" className="btn btn-primary">
+          <Link to="/contact" className="btn btn-primary">
             Connect With Us
             {Icons.arrow}
           </Link>
@@ -127,6 +127,61 @@ function WhatWeDo() {
 /* ============================================================
    Why Partner (zigzag lifecycle)
    ============================================================ */
+function WhyDots() {
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')!
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let w = 0, h = 0, dpr = Math.min(2, window.devicePixelRatio || 1)
+    let dots: { x: number; baseY: number; r: number; a: number; sp: number; amp: number; wl: number; ph: number }[] = []
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#2563EB'
+
+    const resize = () => {
+      const r = canvas.getBoundingClientRect()
+      w = r.width; h = r.height
+      canvas.width = w * dpr; canvas.height = h * dpr
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      const count = Math.round(Math.min(320, Math.max(140, (w * h) / 5200)))
+      dots = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        baseY: Math.random() * h,
+        r: 1 + Math.random() * 2,
+        a: 0.25 + Math.random() * 0.5,
+        sp: 0.4 + Math.random() * 1.1,
+        amp: 6 + Math.random() * 22,
+        wl: 0.004 + Math.random() * 0.01,
+        ph: Math.random() * Math.PI * 2,
+      }))
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    let raf: number, t = 0
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h)
+      t += 0.016
+      for (const d of dots) {
+        d.x += d.sp
+        if (d.x > w + 12) d.x = -12
+        const y = d.baseY + Math.sin(d.x * d.wl + t * 1.6 + d.ph) * d.amp
+        const tw = 0.7 + 0.3 * Math.sin(t * 3 + d.ph)
+        ctx.globalAlpha = d.a * tw
+        ctx.fillStyle = accent
+        ctx.beginPath()
+        ctx.arc(d.x, y, d.r, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      ctx.globalAlpha = 1
+      raf = requestAnimationFrame(draw)
+    }
+    if (reduce) { draw(); cancelAnimationFrame(raf) } else { draw() }
+
+    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf) }
+  }, [])
+  return <canvas ref={ref} className="why-dots" aria-hidden="true" />
+}
 const STAGES = [
   { title: 'Discover', icon: CatIcon.train,  body: 'We learn your goals, constraints, and vision through in-depth discovery.' },
   { title: 'Plan',     icon: CatIcon.arch,   body: 'We shape a clear roadmap and strategy aligned to real business outcomes.' },
@@ -137,7 +192,8 @@ const STAGES = [
 
 function WhyPartner() {
   return (
-    <section className="section bg-alt">
+    <section className="section bg-alt why-sec">
+      <WhyDots />
       <div className="wrap">
         <div className="sechead">
           <h2 className="h-sec balance">Why partner with us</h2>
@@ -147,13 +203,19 @@ function WhyPartner() {
           {STAGES.map((s, i) => (
             <React.Fragment key={s.title}>
               <Reveal className={`zz__card card ${i % 2 ? 'is-down' : 'is-up'}`} delay={i * 80}>
-                <span className="iconbox zz__ic">{s.icon}</span>
                 <h3 className="zz__title">{s.title}</h3>
                 <p className="muted zz__body pretty">{s.body}</p>
               </Reveal>
               {i < STAGES.length - 1 && (
                 <span className={`zz__arrow ${i % 2 ? 'to-up' : 'to-down'}`} aria-hidden="true">
-                  {Icons.arrow}
+                  <svg className="zz__curve" viewBox="0 0 48 96" fill="none">
+                    <path className="zz__curveline"
+                      d={i % 2 ? 'M4 84 C 22 84 24 30 44 14' : 'M4 14 C 22 14 24 68 44 84'}
+                      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                    <path
+                      d={i % 2 ? 'M32 16 L44 14 L40 25' : 'M32 82 L44 84 L40 73'}
+                      stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                  </svg>
                 </span>
               )}
             </React.Fragment>
@@ -168,11 +230,11 @@ function WhyPartner() {
    Industry Case Studies teaser
    ============================================================ */
 const INDUSTRY_CARDS = [
-  { name: 'Education',              gradient: 'linear-gradient(135deg,#1e3a5f,#1d4ed8)' },
-  { name: 'Healthcare',             gradient: 'linear-gradient(135deg,#0f3d2e,#059669)' },
-  { name: 'E-Commerce & Retail',    gradient: 'linear-gradient(135deg,#3d1f0a,#ea580c)' },
-  { name: 'Fintech & Insurance',    gradient: 'linear-gradient(135deg,#2d1f5e,#7c3aed)' },
-  { name: 'Logistics & Supply Chain', gradient: 'linear-gradient(135deg,#0f3d3d,#0d9488)' },
+  { name: 'Education',               img: '/images/edu-card.png' },
+  { name: 'Healthcare',              img: '/images/slot-indx-health.webp' },
+  { name: 'E-Commerce & Retail',     img: '/images/retail-card.png' },
+  { name: 'Fintech & Insurance',     img: '/images/fintech-card-2.png' },
+  { name: 'Logistics & Supply Chain', img: '/images/logi-card.png' },
 ]
 
 function CasesTeaser() {
@@ -182,15 +244,15 @@ function CasesTeaser() {
         <div className="indx-box card">
           <div className="indx__head">
             <h2 className="h-sec balance">Industry-specific software experience</h2>
-            <Link to="#" className="btn btn-primary">
+            <Link to="/case-studies" className="btn btn-primary">
               View case studies
               {Icons.arrow}
             </Link>
           </div>
           <div className="indx__grid">
             {INDUSTRY_CARDS.map(c => (
-              <Link className="indx__card" to="/services" key={c.name}>
-                <div className="indx__bg" style={{ background: c.gradient }} />
+              <Link className="indx__card" to="/case-studies" key={c.name}>
+                <img className="indx__img" alt={c.name} src={c.img} />
                 <div className="indx__overlay" />
                 <div className="indx__content">
                   <h3 className="indx__name">{c.name}</h3>
@@ -232,6 +294,10 @@ function ServicesPreview() {
             <div className="spv-aside__inner">
               <h2 className="h-sec balance">Get high-quality services</h2>
               <p className="lead">Engineered to scale with your business.</p>
+              <Link to="/services" className="btn btn-primary">
+                Explore our services
+                {Icons.arrow}
+              </Link>
             </div>
           </div>
           <div className="spv-grid">
@@ -280,6 +346,7 @@ function Testimonials() {
         <div className="quotes">
           {TESTIMONIALS.map((q, i) => (
             <Reveal className="quote card" key={i} delay={i * 80}>
+              <p className="quote__mark">&ldquo;</p>
               <p className="quote__text pretty">{q.quote}</p>
               <div className="quote__who">
                 <span className="quote__avatar">{q.initials}</span>

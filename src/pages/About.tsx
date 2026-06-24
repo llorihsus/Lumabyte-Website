@@ -64,13 +64,7 @@ function Mission() {
         <div className="mission card">
           <div className="mission__visual">
             <div className="mission__dots" />
-            <div className="mission__emblem">
-              <svg viewBox="0 0 80 80" fill="none">
-                <rect x="10" y="10" width="60" height="60" rx="14" fill="white" fillOpacity=".12" />
-                <path d="M24 22v32h32" stroke="white" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="60" cy="57" r="5" fill="white" />
-              </svg>
-            </div>
+            <img className="mission__img" src="/images/slot-mission-image.webp" alt="" />
           </div>
           <div className="mission__text">
             <h2 className="h-sec balance">Our Mission</h2>
@@ -95,26 +89,10 @@ function Mission() {
    Values
    ============================================================ */
 const VALUES = [
-  {
-    icon: CatIcon.train,
-    title: 'Clear communication',
-    body: 'No jargon, no surprises. You always know where a project stands and why.',
-  },
-  {
-    icon: CatIcon.shield,
-    title: 'Honest guidance',
-    body: "We recommend what's right for your business — even when it's not the biggest project.",
-  },
-  {
-    icon: CatIcon.code,
-    title: 'Solid engineering',
-    body: 'Thoughtful, maintainable code built to last well beyond launch day.',
-  },
-  {
-    icon: CatIcon.growth,
-    title: 'Continuous improvement',
-    body: 'Every project makes us better — we bring those lessons to the next one.',
-  },
+  { title: 'Clear communication', body: 'No jargon, no surprises. You always know where a project stands and why.' },
+  { title: 'Honest guidance',     body: "We recommend what's right for your business — even when it's not the biggest project." },
+  { title: 'Solid engineering',   body: 'Thoughtful, maintainable code built to last well beyond launch day.' },
+  { title: 'Continuous improvement', body: 'Every project makes us better — we bring those lessons to the next one.' },
 ]
 
 function Values() {
@@ -131,9 +109,45 @@ function Values() {
         <div className="values">
           {VALUES.map((v, i) => (
             <Reveal className="value card" key={v.title} delay={i * 70}>
-              <span className="iconbox">{v.icon}</span>
+              <span className="value__num">{String(i + 1).padStart(2, '0')}</span>
               <h3 className="h-card">{v.title}</h3>
               <p className="muted pretty">{v.body}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ============================================================
+   Journey (timeline)
+   ============================================================ */
+const JOURNEY = [
+  { year: 'Nov 2024', title: 'Two developers, one idea',    body: 'Lumabyte begins — a focus on continuous improvement and building software the right way.' },
+  { year: 'Early 2025', title: 'First client partnerships', body: 'We deliver our first projects and start refining a process built around clear communication.' },
+  { year: 'Mid 2025', title: 'Growing the team',            body: 'We expand to a team of four, broadening our reach across industries and disciplines.' },
+  { year: 'Today', title: 'Building for the long term',     body: 'Partnering with ambitious businesses across fintech, healthcare, logistics, retail, and education.' },
+  { year: 'Next', title: 'Just the beginning',              body: 'A long-term vision to support more businesses through thoughtful, durable digital solutions.' },
+]
+
+function Journey() {
+  return (
+    <section className="section">
+      <div className="wrap">
+        <div className="sechead left">
+          <span className="eyebrow">{CatIcon.migrate}Our Journey</span>
+          <h2 className="h-sec balance">How we got here</h2>
+        </div>
+        <div className="timeline">
+          {JOURNEY.map((j, i) => (
+            <Reveal className="tl__item" key={i} delay={i * 60}>
+              <div className="tl__marker"><span /></div>
+              <div className="tl__body">
+                <span className="tl__year">{j.year}</span>
+                <h3 className="tl__title">{j.title}</h3>
+                <p className="muted pretty">{j.body}</p>
+              </div>
             </Reveal>
           ))}
         </div>
@@ -152,6 +166,7 @@ export default function About() {
       <AboutStats />
       <Mission />
       <Values />
+      <Journey />
       <FinalCTA />
     </>
   )
